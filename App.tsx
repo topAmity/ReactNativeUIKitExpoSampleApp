@@ -1,20 +1,32 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import {
+  AmityUiKitProvider,
+  AmityUiKitSocial,
+} from '@amityco/asc-react-native-ui-kit'
+import LoginPage from './Login';
 
+export interface ILoginForm {
+  userId: string;
+  apiKey: string;
+  apiRegion: string;
+}
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+  const [form, setForm] = useState<ILoginForm>();
+
+  const submitForm = (value: ILoginForm) => {
+    setForm(value);
+  };
+  return !form ? (
+    <LoginPage onSubmit={submitForm} />
+  ) : (
+
+    <AmityUiKitProvider
+      apiKey={form.apiKey}
+      apiRegion={form.apiRegion}
+      userId={form.userId}
+      displayName={form.userId}
+      apiEndpoint={`https://api.${form.apiRegion}.amity.co`}>
+      <AmityUiKitSocial />
+    </AmityUiKitProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
