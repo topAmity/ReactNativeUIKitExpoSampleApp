@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,26 +7,39 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import {ILoginForm} from './App';
-
+import { ILoginForm } from './App';
+import RNPickerSelect from 'react-native-picker-select';
 interface ILoginPage {
   onSubmit: (value: ILoginForm) => void;
 }
-const LoginPage = ({onSubmit}: ILoginPage) => {
+const LoginPage = ({ onSubmit }: ILoginPage) => {
   const [userId, setUserId] = useState('top');
-  const [apiRegion, setApiRegion] = useState('sg');
   const [apiKey, setApiKey] = useState(
     'b3babb0b3a89f4341d31dc1a01091edcd70f8de7b23d697f',
   );
-
+  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedApiKeyOption, setSelectedApiKeyOption] = useState('b3babb0b3a89f4341d31dc1a01091edcd70f8de7b23d697f');
+  const [selectedRegionOption, setSelectedRegionOption] = useState('sg');
+  const options = [
+    { label: 'Social', value: 'social' },
+    { label: 'Chat', value: 'chat' },
+  ];
+  const regionOptions = [
+    { label: 'sg', value: 'sg' },
+    { label: 'eu', value: 'eu' },
+    { label: 'us', value: 'us' },
+    { label: 'staging', value: 'staging' },
+    { label: 'dev', value: 'dev' },
+  ];
+  const apiKeyOptions = [
+    { label: 'b3babb0b3a89f4341d31dc1a01091edcd70f8de7b23d697f', value: 'b3babb0b3a89f4341d31dc1a01091edcd70f8de7b23d697f' },
+    { label: 'b0efe90c69ddf2604a63d81853081688840088b6e967397e', value: 'b0efe90c69ddf2604a63d81853081688840088b6e967397e' },
+    { label: 'custom', value: 'custom' }
+  ];
   const handleLogin = () => {
     // Perform login logic here
-    console.log('Login button pressed');
-    console.log('Userid:', userId);
-    console.log('API Endpoint:', apiRegion);
-    console.log('API Key:', apiKey);
     onSubmit &&
-      onSubmit({userId: userId, apiRegion: apiRegion, apiKey: apiKey});
+      onSubmit({ userId: userId, apiRegion: selectedRegionOption, apiKey: selectedApiKeyOption, module: selectedOption });
   };
 
   return (
@@ -47,28 +60,76 @@ const LoginPage = ({onSubmit}: ILoginPage) => {
         />
       </View>
       <View style={styles.inputContainer}>
-        <Text style={styles.label}>API Region</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your API Region"
-          onChangeText={text => setApiRegion(text)}
-          value={apiRegion}
-        />
-      </View>
-      <View style={styles.inputContainer}>
         <Text style={styles.label}>API Key</Text>
-        <TextInput
+        {selectedApiKeyOption === 'custom' ? <TextInput
           style={styles.input}
           placeholder="Enter your API Key"
           onChangeText={text => setApiKey(text)}
           value={apiKey}
+        /> :
+          <View>
+            <RNPickerSelect
+              onValueChange={(value) => setSelectedApiKeyOption(value)}
+              items={apiKeyOptions}
+              value={selectedApiKeyOption}
+              style={dropdownStyles}
+
+            />
+            <Text style={{color: 'gray', paddingVertical: 6}}>{selectedApiKeyOption}</Text>
+          </View>
+        }
+
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>API Region</Text>
+        <RNPickerSelect
+          onValueChange={(value) => setSelectedRegionOption(value)}
+          items={regionOptions}
+          value={selectedRegionOption}
+          style={dropdownStyles}
+
         />
       </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>UIKit Module</Text>
+        <View style={styles.input}>
+          <RNPickerSelect
+            onValueChange={(value) => setSelectedOption(value)}
+            items={options}
+            value={selectedOption}
+          />
+        </View>
+
+      </View>
+
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
     </View>
   );
+};
+const dropdownStyles = {
+  inputIOS: {
+    fontSize: 14, // Adjust the font size here
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
+    color: 'black',
+    paddingRight: 30,
+  },
+  inputAndroid: {
+    fontSize: 14, // Adjust the font size here
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    color: 'black',
+    paddingRight: 30,
+  },
+
 };
 
 const styles = StyleSheet.create({
@@ -104,6 +165,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     paddingLeft: 10,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   button: {
     width: '80%',

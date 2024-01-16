@@ -10,10 +10,12 @@
   },
   "dependencies": {
     "@amityco/asc-react-native-ui-kit": "./amityco-asc-react-native-ui-kit-0.1.8.tgz",
+    "@amityco/react-native-chat-ui-kit": "./amityco-react-native-chat-ui-kit-1.0.0.tgz",
     "expo": "~49.0.15",
     "expo-status-bar": "~1.6.0",
     "react": "18.2.0",
-    "react-native": "0.72.6"
+    "react-native": "0.72.6",
+    "react-native-picker-select": "^9.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
